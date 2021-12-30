@@ -1,0 +1,4 @@
+certifi==2021.10.8
+pcapy==0.11.4
+protobuf==3.19.1
+wincertstore==0.2
