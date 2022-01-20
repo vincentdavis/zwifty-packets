@@ -17,5 +17,8 @@ Grab the latest stable python version
  * A recent release of Pcapy.
 
 
+# pip install -r requriement.txt
 
+### Monitor ###
 
+# python ZwiftPacketMonitor.py
