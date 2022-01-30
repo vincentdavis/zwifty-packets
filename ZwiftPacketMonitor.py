@@ -8,34 +8,50 @@ import pcapy
 import zwift_messages_pb2 
 
 def main():
-  # list all devices
-  devices = pcapy.findalldevs()
+  
+    # list all devices
+    devices = pcapy.findalldevs();
 
-  # ask user to enter device name to sniff
-  print("Available devices are :")
+    # If no devices were found print an error
+    if (len(devices) < 1):
+        print("No devices were found on this machine");
+        return;
+        
 
-  for d in devices:
-    print(d)
+    print("");
+    print("The following devices are available on this machine:");
+    print("----------------------------------------------------");
+    print();
 
-  dev = devices[0]
+    i = 0;
+    for d in devices:
+        print("{0}) {1}".format(i, d))
+        i+=1
+   
+    print("");
+    selection = input("-- Please choose a device to capture: ");
 
-  print("Sniffing device " + dev)
+    i = int(selection);
 
-  '''
-  open device
-  # Arguments here are:
-  #   device
-  #   snaplen (maximum number of bytes to capture _per_packet_)
-  #   promiscious mode (1 for true)
-  #   timeout (in milliseconds)
-  '''
-  cap = pcapy.open_live(dev, 65536, 1, 0)
+    if (i >= 0 and i < len(devices)):
+        print("Starting capture of device {0}".format(devices[i]));
 
-  # start sniffing packets
-  while (1):
-    (header, packet) = cap.next()
-    # print ('%s: captured %d bytes, truncated to %d bytes' %(datetime.datetime.now(), header.getlen(), header.getcaplen()))
-    parse_packet(packet)
+        '''
+        open device
+        # Arguments here are:
+        #   device
+        #   snaplen (maximum number of bytes to capture _per_packet_)
+        #   promiscious mode (1 for true)
+        #   timeout (in milliseconds)
+        '''
+        cap = pcapy.open_live(devices[i], 65536, 1, 0)
+        cap.setfilter("udp port 3022 or tcp port 3023");
+
+        # start sniffing packets
+        while (1):
+            (header, packet) = cap.next()
+            # print ('%s: captured %d bytes, truncated to %d bytes' %(datetime.datetime.now(), header.getlen(), header.getcaplen()))
+            parse_packet(packet)
 
 # Convert a string of 6 characters of ethernet address into a dash separated hex string
 def eth_addr(a):
@@ -106,14 +122,36 @@ def parse_packet(packet):
               #     length) + ' Checksum : ' + str(checksum))
               try:
                 if(source_port == 3022):
-                  print("incomingPlayerState")
+
                   player_state = zwift_messages_pb2.ServerToClient()
-                  player_state.ParseFromString(packet)
-                  print(player_state)
+                  player_state.ParseFromString(data)
+                  print("incomingPlayerState: {0}".format(player_state))
                   
                 elif(dest_port == 3022):
-                  print("outgoingPlayerState")
-                  # print('Data : ' + str(data))
+
+                  # Outgoing packets *may* have some a metadata header that's not part of the protobuf.
+                  # This is sort of a magic number at the moment -- not sure if the first byte is coincidentally 0x06, 
+                  # or if the header (if there is one) is always 5 bytes long
+                  skip = 5;
+  
+                  if (data[skip] == 0x08):
+                      # NOOP, as the protobuf payload looks like it starts after the initial skip estimate
+                      pass
+                  elif (data[0] == 0x08):
+                      # protobuf payload starts at the beginning
+                      skip = 0;
+                  else:
+                      # Use the first byte as an indicator of how far into the payload we need to look
+                      # in order to find the beginning of the protobuf
+                      skip = data[0] - 1;
+  
+                  # bypass skipped bytes and trim off last 4
+                  data = data[skip:len(data) - 4]
+  
+                  player_state = zwift_messages_pb2.ClientToServer()
+                  player_state.ParseFromString(data)
+                  print("outgoingPlayerState: {0}".format(player_state))
+
               except Exception as e:
                 print("Exception :", str(e))
 

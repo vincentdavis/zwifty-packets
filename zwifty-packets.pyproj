@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{bd683b4c-88b5-43c8-a675-9887e3c4b7c5}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>ZwiftPacketMonitor.py</StartupFile>
+    <StartupFile>TestHarness.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -22,6 +22,10 @@
     <Content Include="requirement.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="monitor.py" />
+    <Compile Include="TestHarness.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ZwiftPacketMonitor.py" />
     <Compile Include="zwift_messages_pb2.py" />
   </ItemGroup>
