@@ -5,7 +5,7 @@ Packet sniffer in python using the pcapy python library
 import socket
 from struct import *
 import pcapy
-import zwift_messages_pb2 
+from zpm.protobuf import zwift_messages_pb2 as zwift_message
 
 def main():
   
@@ -123,7 +123,7 @@ def parse_packet(packet):
               try:
                 if(source_port == 3022):
 
-                  player_state = zwift_messages_pb2.ServerToClient()
+                  player_state = zwift_message.ServerToClient()
                   player_state.ParseFromString(data)
                   print("incomingPlayerState: {0}".format(player_state))
                   
@@ -148,7 +148,7 @@ def parse_packet(packet):
                   # bypass skipped bytes and trim off last 4
                   data = data[skip:len(data) - 4]
   
-                  player_state = zwift_messages_pb2.ClientToServer()
+                  player_state = zwift_message.ClientToServer()
                   player_state.ParseFromString(data)
                   print("outgoingPlayerState: {0}".format(player_state))
 

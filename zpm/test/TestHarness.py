@@ -1,8 +1,13 @@
 import pcapy
-
-from monitor import Monitor
+import zpm.monitor as monitor
+import logging
 
 def main():
+    logging.getLogger(__name__)
+    logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
+
+    logging.info("Process starting.")
+
     # list all devices
     devices = pcapy.findalldevs();
 
@@ -29,7 +34,7 @@ def main():
 
     if (i >= 0 and i < len(devices)):
         print("Starting capture of device {0}".format(devices[i]));
-        m = Monitor();
+        m = monitor.Monitor();
         m.StartCaptureAsync(devices[i]);
 
 
