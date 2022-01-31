@@ -1,10 +1,11 @@
 import socket
 from struct import *
 import pcapy
-import zwift_messages_pb2 
+from zpm.protobuf import zwift_messages_pb2 as zwift_message
+import logging
 
 class Monitor():
-
+    
     # The default Zwift UDP data port
     ZWIFT_UDP_PORT = 3022;
 
@@ -15,7 +16,8 @@ class Monitor():
     READ_TIMEOUT = 1000;
 
     def __init__(self):
-        print("Monitor class initialized")
+        print("{0} initialized".format(__name__))
+
 
     def StartCaptureAsync(self, networkInterface):
         print("Capture Started on " + networkInterface);
@@ -122,7 +124,7 @@ class Monitor():
                     try:
                         if(source_port == 3022):
 
-                            player_state = zwift_messages_pb2.ServerToClient()
+                            player_state = zwift_message.ServerToClient()
                             player_state.ParseFromString(data)
                             print("incomingPlayerState: {0}".format(player_state))
                   
@@ -147,7 +149,7 @@ class Monitor():
                             # bypass skipped bytes and trim off last 4
                             data = data[skip:len(data) - 4]
 
-                            player_state = zwift_messages_pb2.ClientToServer()
+                            player_state = zwift_message.ClientToServer()
                             player_state.ParseFromString(data)
                             print("outgoingPlayerState: {0}".format(player_state))
 

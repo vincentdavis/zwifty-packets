@@ -5,13 +5,14 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{bd683b4c-88b5-43c8-a675-9887e3c4b7c5}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>TestHarness.py</StartupFile>
+    <StartupFile>zpm\test\TestHarness.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <InterpreterId>MSBuild|venv|$(MSBuildProjectFullPath)</InterpreterId>
+    <SuppressConfigureTestFrameworkPrompt>true</SuppressConfigureTestFrameworkPrompt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
@@ -20,14 +21,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="requirement.txt" />
+    <Content Include="zpm\protobuf\zwift_messages.proto" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="monitor.py" />
-    <Compile Include="TestHarness.py">
+    <Compile Include="zpm\monitor.py" />
+    <Compile Include="zpm\test\TestHarness.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ZwiftPacketMonitor.py" />
-    <Compile Include="zwift_messages_pb2.py" />
+    <Compile Include="zpm\protobuf\__init__.py" />
+    <Compile Include="zpm\__init__.py" />
+    <Compile Include="zpm\ZwiftPacketMonitor.py" />
+    <Compile Include="zpm\protobuf\zwift_messages_pb2.py" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.10" />
@@ -42,6 +46,11 @@
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
       <Architecture>X64</Architecture>
     </Interpreter>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="zpm\" />
+    <Folder Include="zpm\test\" />
+    <Folder Include="zpm\protobuf\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
 </Project>
