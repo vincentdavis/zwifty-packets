@@ -3,10 +3,14 @@ import zpm.monitor as monitor
 import logging
 
 def main():
-    logging.getLogger(__name__)
-    logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
+    #logging.getLogger(__name__)
+    #logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 
-    logging.info("Process starting.")
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s.%(msecs)03d - %(name)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+    logger = logging.getLogger(__name__)
+
+
+    logger.info("Process starting.")
 
     # list all devices
     devices = pcapy.findalldevs();

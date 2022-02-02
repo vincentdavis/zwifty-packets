@@ -3,6 +3,8 @@ from struct import *
 import pcapy
 from zpm.protobuf import zwift_messages_pb2 as zwift_message
 import logging
+import threading
+import time
 
 class Monitor():
     
@@ -16,6 +18,8 @@ class Monitor():
     READ_TIMEOUT = 1000;
 
     def __init__(self):
+        self.logger = logging.getLogger(__name__)
+
         print("{0} initialized".format(__name__))
 
 
@@ -36,22 +40,44 @@ class Monitor():
         '''
         open device
         # Arguments here are:
-        #   device
+        #   network
         #   snaplen (maximum number of bytes to capture _per_packet_)
         #   promiscious mode (1 for true)
         #   timeout (in milliseconds)
         '''
-        cap = pcapy.open_live(networkInterface, 65536, 1, self.READ_TIMEOUT);
-        cap.setfilter("udp port 3022 or tcp port 3023");
+        self.pcap_device = pcapy.open_live(networkInterface, 65536, 1, self.READ_TIMEOUT);
+        self.pcap_device.setfilter("udp port 3022 or tcp port 3023");
         #cap.setfilter("udp port {ZWIFT_UDP_PORT} or tcp port {ZWIFT_TCP_PORT}");
 
+        self.packet_count = 0
+        thread = threading.Thread(target=self.read_packets, daemon=True)
+        thread.start()
+
+        thread.join()
+
         # start sniffing packets
-        while (1):
-            (header, packet) = cap.next()
-            #print ('%s: captured %d bytes, truncated to %d bytes' %(datetime.datetime.now(), header.getlen(), header.getcaplen()))
+        #while (1):
+        #    (header, packet) = self.pcap_device.next()
+        #    #print ('%s: captured %d bytes, truncated to %d bytes' %(datetime.datetime.now(), header.getlen(), header.getcaplen()))
             
+        #    if (len(packet) > 0):
+        #        self.parse_packet(packet)
+
+    def read_packets(self):
+        self.logger.info("Thread starting.")
+
+        while (1):
+            (header, packet) = self.pcap_device.next()
+
             if (len(packet) > 0):
+                self.packet_count += 1
+                if (self.packet_count % 100 == 0):
+                    self.logger.info("Packets: %d", self.packet_count)
                 self.parse_packet(packet)
+            else:
+                self.logger.info("Timeout waiting for packet")
+
+        self.logger.info("Thread ending.")
 
 
     # Convert a string of 6 characters of ethernet address into a dash separated hex string
@@ -122,13 +148,13 @@ class Monitor():
                     #print('Source Port : ' + str(source_port) + ' Dest Port : ' + str(dest_port) + ' Length : ' 
                     #      + str(length) + ' Checksum : ' + str(checksum))
                     try:
-                        if(source_port == 3022):
+                        if(source_port == self.ZWIFT_UDP_PORT):
 
                             player_state = zwift_message.ServerToClient()
                             player_state.ParseFromString(data)
-                            print("incomingPlayerState: {0}".format(player_state))
+                            #self.logger.info("count: {0}, incomingPlayerState: {1}".format(self.packet_count, player_state))
                   
-                        elif(dest_port == 3022):
+                        elif(dest_port == self.ZWIFT_UDP_PORT):
                             
                             # Outgoing packets *may* have some a metadata header that's not part of the protobuf.
                             # This is sort of a magic number at the moment -- not sure if the first byte is coincidentally 0x06, 
@@ -151,7 +177,7 @@ class Monitor():
 
                             player_state = zwift_message.ClientToServer()
                             player_state.ParseFromString(data)
-                            print("outgoingPlayerState: {0}".format(player_state))
+                            #self.logger.info("count: {0}, outgoingPlayerState: {1}".format(self.packet_count, player_state))
 
                     except Exception as e:
                         print("Exception :", str(e))
