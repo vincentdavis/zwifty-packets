@@ -5,7 +5,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{bd683b4c-88b5-43c8-a675-9887e3c4b7c5}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>zpm\test\TestHarness.py</StartupFile>
+    <StartupFile>
+    </StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -24,13 +25,12 @@
     <Content Include="zpm\protobuf\zwift_messages.proto" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="tests\context.py" />
+    <Compile Include="tests\TestHarness.py" />
+    <Compile Include="tests\ZwiftPacketMonitor.py" />
     <Compile Include="zpm\monitor.py" />
-    <Compile Include="zpm\test\TestHarness.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="zpm\protobuf\__init__.py" />
     <Compile Include="zpm\__init__.py" />
-    <Compile Include="zpm\ZwiftPacketMonitor.py" />
     <Compile Include="zpm\protobuf\zwift_messages_pb2.py" />
   </ItemGroup>
   <ItemGroup>
@@ -48,8 +48,8 @@
     </Interpreter>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="tests\" />
     <Folder Include="zpm\" />
-    <Folder Include="zpm\test\" />
     <Folder Include="zpm\protobuf\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
