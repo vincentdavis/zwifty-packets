@@ -1,4 +1,61 @@
 syntax="proto3";
+package ZwiftPacketMonitor;
+
+message Meetup {
+    int32 id = 1;
+    int32 tag2 = 2;
+    string name = 3;
+    string description = 4;
+    int64 start_time = 5;
+    fixed32 distance = 7;
+    int32 tag8 = 8;
+
+    message MeetupInner {
+        int32 id = 1;
+        string name = 2;
+        string description = 3;
+        string f7 = 7;
+        int64 f8 = 8;
+        int64 f9 = 9;
+        int64 f10 = 10;
+        int64 f11 = 11;
+        int64 f12 = 12;
+        int64 f13 = 13;
+        int64 f14 = 14;
+        int64 f15 = 15;
+        int64 f16 = 16;
+        int64 f17 = 17;
+        int64 f18 = 18;
+        int64 f22 = 22;
+        fixed32 distance = 24;
+        int64 f25 = 25;
+        int32 f29 = 29;
+        int32 f30 = 30;
+        int32 f31 = 31;
+        fixed32 f32 = 32;
+        fixed32 f33 = 33;
+        int32 duration = 34;
+        int64 f42 = 42;
+        int64 f44 = 44;
+        int32 f46 = 46;
+        int32 f47 = 47;
+    }
+    MeetupInner meetup_inner = 10;
+    string thumbnail = 12;
+    int32 duration = 13;
+    int64 f14 = 14;
+    int32 f17 = 17;
+    int32 f18 = 18;
+    int32 f22 = 22;
+    int32 f23 = 23;
+    int32 meetup_only_view = 24;
+    int32 f25 = 25;
+    int32 f27 = 27;
+    int32 f28 = 28;
+    int32 f29 = 29;
+    int32 f34 = 34;
+    int32 f35 = 35;   
+}
 
 message PlayerState {
     int32 id = 1;
@@ -27,40 +84,20 @@ message PlayerState {
     int32 watchingRiderId = 28;
     int32 groupId = 29;
     int64 sport = 31;
+    float f34 = 34;  // actual distance moved included lateral movement
 }
 
 message ClientToServer {
     int32 connected = 1;
     int32 rider_id = 2;
     int64 world_time = 3;
-    PlayerState state = 7;
     int32 seqno = 4;
+    PlayerState state = 7;
     int64 tag8 = 8;
     int64 tag9 = 9;
     int64 last_update = 10;
     int64 tag11 = 11;
     int64 last_player_update = 12;
-}
-
-message SegmentResult {
-    int64 id = 1;
-    int64 rider_id = 2;
-    int64 event_subgroup_id = 6;
-    string first_name = 7;
-    string last_name = 8;
-    string finish_time_str = 10;
-    int64 elapsed_ms = 11;
-    int32 powermeter = 12;
-    int32 weight = 13;
-    int32 power = 15;
-    int32 heartrate = 19;
-}
-
-message SegmentResults {
-    int64 world_id = 1;
-    int64 segment_id = 2;
-    int64 event_subgroup_id = 3;
-    repeated SegmentResult segment_results = 4;
 }
 
 message UnknownMessage1 {
@@ -74,17 +111,137 @@ message UnknownMessage {
     // UnknownMessage1 tag4=4;
 }
 
+
+message PlayerUpdate {
+    int64 tag1 = 1;
+    int32 tag2 = 2;
+    int32 tag3 = 3;
+    bytes payload = 4;
+    int64 tag5 = 5;
+    int64 tag6 = 6;
+    int64 tag7 = 7;
+    int64 tag8 = 8;
+    int64 tag9 = 9;
+    int64 tag11 = 11;
+    int64 tag12 = 12;
+    int64 tag14 = 14;
+    int64 tag15 = 15;
+}
+
+message Payload105 { // player entered world ?
+    int64 f1 = 1;
+    int32 rider_id = 2;
+    int32 f3 = 3;
+    int64 f4 = 4; // int32?
+    int64 f5 = 5; 
+    int64 f6 = 6; // int32?
+    string firstName = 7;
+    string lastName = 8;
+    int64 f9 = 9;
+    int64 f11 = 11;
+    int32 f12 = 12;
+    int32 f13 = 13;
+    int32 f14 = 14;
+    int32 f15 = 15;
+    int32 f16 = 16;
+    string f7date = 17;
+    int32 f19 = 19;
+}
+
+message Chat {
+    int32 rider_id = 1;
+    int32 to_rider_id = 2; // 0 if public message
+    int32 f3 = 3; // always value 1 ?
+    string firstName = 4;
+    string lastName = 5;
+    string message = 6;
+    string avatar = 7;
+    int32 countryCode = 8;
+    int32 eventSubgroup = 11;
+}
+
+message RideOn {
+    int32 rider_id = 1;
+    int32 to_rider_id = 2;
+    string firstName = 3;
+    string lastName = 4;
+    int32 countryCode = 5;
+}
+
+message Payload2 {
+    int32 f1 = 1;
+    int64 f2 = 2;
+}
+
+message TimeSync { 
+    int32 rider_id = 1;
+    int64 world_time = 2;
+    int32 f3 = 3;
+}
+
+message Payload110 { 
+    // format to be determined
+}
+
+message Payload109 { 
+    // format to be determined
+}
+
+
+message EventPositions {
+    int32 position = 1;
+    message EventRiderPosition {
+        int32 rider_id = 1;
+        // ?? float distance_covered = 2; 
+    }
+    repeated EventRiderPosition eventRiderPosition = 4;
+    int32 num_riders = 116;
+}
+
 message ServerToClient {
     int32 tag1 = 1;
     int32 rider_id = 2;
     int64 world_time = 3;
     int32 seqno = 4;
     repeated PlayerState player_states = 8;
-    repeated UnknownMessage player_updates = 9;
+    repeated PlayerUpdate player_updates = 9;
     int64 tag11 = 11;
+    string local_ip = 12;
+    int32 tag15 = 15;
     int64 tag17 = 17;
     int32 num_msgs = 18;
     int32 msgnum = 19;
+    EventPositions event_positions = 23;
+    Server1 servers1 = 24;
+    Server2 servers2 = 25;
+}
+
+message ServerAddress {
+    int32 f1 = 1;
+    int32 f2 = 2;
+    string ip = 3;
+    int32 f4 = 4;
+    fixed32 f5 = 5;
+    fixed32 f6 = 6;
+}
+
+message ServerPool {
+    int32 f1 = 1;
+    int32 f2 = 2;
+    repeated ServerAddress addresses = 3;
+    int32 f4 = 4;
+}
+
+message Server2 {
+    repeated ServerPool pool = 1;
+    int32 f2 = 2;
+}
+
+message Server1 {
+    repeated ServerAddress addresses = 1;
+    int32 f2 = 2;
+    int32 f3 = 3;
+    int32 f4 = 4;
 }
 
 message WorldAttributes {
@@ -125,127 +282,4 @@ message RiderAttributes {
     AttributeMessage attributeMessage = 4;
     int32 theirId = 10;
     int32 f13 = 13;
-}
-
-message Profiles {
-    repeated Profile profiles = 1;
-}
-
-message Profile {
-	int32 id = 1;
-	string firstName = 4;
-	string lastName = 5;
-	int32 male = 6;
-	int32 weight = 9;
-	int32 bodyType = 12;
-	int32 countryCode = 34;
-	int32 totalDistance = 35;
-	int32 totalDistanceClimbed = 36;
-	int32 totalTimeInMinutes = 37;
-	int32 totalWattHours = 41;
-	int32 height = 42;
-	int32 totalExperiencePoints = 46;
-	int32 achievementLevel = 49;
-	int32 powerSource = 52;
-	int32 age = 55;
-	string launchedGameClient = 108;
-	int32 currentActivityId = 109;
-}
-
-// ZML communication
-
-//  ZML server side
-
-message Vector3 {
-    float x = 1;
-    float y = 2;
-    float z = 3;
-}
-message PlayerInfo {
-    int32 id = 1;
-    int32 f2 = 2;
-    Vector3 position = 3;
-    string profile = 5;
-    int32 id2 = 6;
-    int32 f7 = 7;
-    string name = 11;
-    int32 countryCode = 12;
-    fixed32 worldTime = 13;
-    int32 f16 = 16;
-}
-
-message GTPC21_6_1 {
-    int32 seqno = 1;
-    repeated PlayerInfo playerInfos = 2;
-    int32 f3 = 3;
-}
-
-message GTPC21_6 {
-    repeated GTPC21_6_1 gtpc21_6_1 = 1;
-}
-
-message GTPC21_4 {
-    int32 f1 = 1;
-    string f6 = 6;
-    int32 f7 = 7;
-    int32 f8 = 8;
-}
-
-message GTPC21_8 {
-    int32 f1 = 1;
-    int32 f2 = 2;
-}
-
-message GTPC21 {
-    int32 f1 = 1;
-    GTPC21_4 gtpc21_4 = 4;
-    GTPC21_6 gtpc21_6 = 6;
-    GTPC21_8 gtpc21_8 = 8;
-}
-
-message GameToPhoneCommand {
-    int32 seqno = 1;
-    int32 f2 = 2;
-    GTPC21 gtpc21 = 21;
-}
-
-message GameToPhone {
-    int32 f1 = 1;
-    int32 f2 = 2;
-    int32 id = 3;
-    int32 f4 = 4;
-    int32 f6 = 6;
-    int32 f7 = 7;
-    repeated GameToPhoneCommand commands = 11;
-}
-
-//  ZML client side
-
-message ZMLClientInfo {
-    string appVersion = 1;
-    string systemOSVersion = 2;
-    string systemOS = 3;
-    string systemHardware = 4;
-}
-
-message ZMLClientCapabilities {
-    int32 f1 = 1;
-    ZMLClientInfo info = 5;
-}
-
-message PhoneToGameCommand {
-    int32 seqno = 1;
-    int32 command = 2;
-    int32 subject = 3;
-    int32 f5 = 5;
-    string f6 = 6;
-    int32 f7 = 7;
-    int32 playerId = 19;
-    ZMLClientCapabilities capabilities = 21;
-}
-
-message PhoneToGame {
-    int32 id = 1;
-    PhoneToGameCommand command = 2;
-    int32 f10 = 10;
 }
