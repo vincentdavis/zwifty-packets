@@ -5,14 +5,13 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{bd683b4c-88b5-43c8-a675-9887e3c4b7c5}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>
-    </StartupFile>
+    <StartupFile>tests\TestHarness.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <InterpreterId>MSBuild|venv|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>Global|PythonCore|3.10</InterpreterId>
     <SuppressConfigureTestFrameworkPrompt>true</SuppressConfigureTestFrameworkPrompt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
@@ -21,13 +20,16 @@
     <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="pyproject.toml" />
     <Content Include="requirement.txt" />
+    <Content Include="setup.cfg" />
     <Content Include="zpm\protobuf\zwift_messages.proto" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="tests\context.py" />
     <Compile Include="tests\TestHarness.py" />
     <Compile Include="tests\ZwiftPacketMonitor.py" />
+    <Compile Include="zpm\events.py" />
     <Compile Include="zpm\monitor.py" />
     <Compile Include="zpm\protobuf\__init__.py" />
     <Compile Include="zpm\__init__.py" />
@@ -35,17 +37,6 @@
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.10" />
-  </ItemGroup>
-  <ItemGroup>
-    <Interpreter Include="venv\">
-      <Id>venv</Id>
-      <Version>0.0</Version>
-      <Description>venv (Python 3.10 (64-bit))</Description>
-      <InterpreterPath>Scripts\python.exe</InterpreterPath>
-      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
-      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
-      <Architecture>X64</Architecture>
-    </Interpreter>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="tests\" />
