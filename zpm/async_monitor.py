@@ -62,8 +62,9 @@ class Monitor(metaclass=Singleton):
         A single callback can only be registered once for an event.
         """
         if (event_type in self._subscribers):
-            assert(subscriber_fn not in self._subscribers.get(event_type)), \
-                f"Callback {subscriber_fn.__name__} is already subscribed to event {event_type.name}"
+            if (subscriber_fn in self._subscribers.get(event_type)):
+                raise RuntimeError(
+                    f"Callback {subscriber_fn.__name__} is already subscribed to event {event_type.name}")
 
         self._subscribers[event_type].append(subscriber_fn)
 
