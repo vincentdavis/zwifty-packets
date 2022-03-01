@@ -5,9 +5,11 @@ Packet sniffer in python using the pcapy python library
 import socket
 from struct import *
 import pcapy
-import logging
-from context import zpm
-from zpm.protobuf import zwift_messages_pb2 as zwift_message
+from src.zwiftpktmon import zwift_messages_pb2 as zwift_message
+
+
+
+
 
 def main():
   
