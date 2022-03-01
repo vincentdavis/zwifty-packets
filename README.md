@@ -1,11 +1,16 @@
 # zwiftpktmon
-
+A Python port of the C# ZwiftPacketMonitor project which monitors Zwift UDP packets
 
 This project implements a TCP and UDP packet monitor for the Zwift cycling simulator. It listens for packets on a specific port of a local network adapter, and when found, deserializes the payload and dispatches events that can be consumed by the caller.
 
 NOTE: Because this utilizes a network packet capture to intercept the UDP packets, your system may require this code to run using elevated privileges.
 
+### Requirements ###
 
+ * Requires Python version 3.10 or higher
+
+Uses the project pcapy-ng as its interface to the Pcap-API.  The Pcap-API exists natively on MacOS and Linux but not on Windows.
+On Windows, the Npcap packet capture library must be installed (available here: https://npcap.com/dist/npcap-1.60.exe)
 
 ## Setup ##
 
