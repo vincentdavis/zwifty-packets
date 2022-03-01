@@ -5,7 +5,6 @@ Used to test functionality
 
 Uses the PySimpleGui framework
 """
-
 import asyncio
 import logging
 
@@ -13,9 +12,8 @@ import PySimpleGUI as sg
 import pcapy
 
 import context  # adds base directory to path
-# import zpm.async_monitor
-from zpm.async_monitor import Monitor
-import zpm.events as events
+from src.zwiftpktmon.async_monitor import Monitor
+import src.zwiftpktmon.events as events
 
 Log: logging.Logger = None
 window = None
@@ -46,22 +44,22 @@ async def main():
 
     m = Monitor()
 
-    m.RegisterEventSubscriber(events.ZwiftEvent.TimeoutWaitingForPacketEvent, OnTimeoutWaitingForPacketEvent)
-    m.RegisterEventSubscriber(events.ZwiftEvent.IncomingRiderStateEvent, OnIncomingRiderStateEvent)
-    m.RegisterEventSubscriber(events.ZwiftEvent.OutgoingRiderStateEvent, OnOutgoingRiderStateEvent)
+    m.register_subscriber(events.ZwiftEvent.TimeoutWaitingForPacketEvent, OnTimeoutWaitingForPacketEvent)
+    m.register_subscriber(events.ZwiftEvent.IncomingRiderStateEvent, OnIncomingRiderStateEvent)
+    m.register_subscriber(events.ZwiftEvent.OutgoingRiderStateEvent, OnOutgoingRiderStateEvent)
 
     while True:  # Event Loop
         Log.debug("in event loop")
         event, values = window.read(timeout=500, timeout_key="-TIMEOUT-")
         if event == sg.WIN_CLOSED or event == 'Exit':
-            await Monitor().StopCaptureAsync()
+            await Monitor().stop_capture()
             break
         if event == 'Go':
             d = window['-DEVICES-'].get()
             if len(d) == 1:
                 print(f'Device {d[0]} selected.')
                 # Start the capture.  Don't await as StartCaptureAsync won't return until capture is stopped.
-                asyncio.create_task(Monitor().StartCaptureAsync(d[0]))
+                asyncio.create_task(Monitor().start_capture(d[0]))
         elif event == '-TEST-':
             msg = values['-TEST-']
             print(f'{msg}')
